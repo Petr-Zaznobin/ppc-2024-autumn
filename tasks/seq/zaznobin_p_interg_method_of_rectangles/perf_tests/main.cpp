@@ -99,7 +99,3 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, test_task_run) {
   EXPECT_NEAR(result, expected_result, 0.0001);
 }
 
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
