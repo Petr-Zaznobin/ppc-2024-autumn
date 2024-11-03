@@ -61,7 +61,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, sin_seq) {
   ASSERT_NEAR(res, ans, 1e-3);
 }
 
-TEST(Sequential, exp_seq) {
+TEST(zaznobin_p_interg_method_of_rectangles_seq, exp_seq) {
   double a = 0.0;
   double b = 1.0;
   int n = 1000;
