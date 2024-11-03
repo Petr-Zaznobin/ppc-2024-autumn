@@ -17,13 +17,13 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override; // Выдать результаты в удобоваримом виде для пользователя
   void get_func(const std::function<double(double)>& func); // получение функция для интегрирования
  private:
-    double a={};
-    double b={};
-    double n={};
-    //std::vector<double> input_;
-    std::function<double(double)> func;
-    double res={};
-    double integrate(const std::function<double(double)>& f, double a, double b, int n);
+  double a={};
+  double b={};
+  double n={};
+  //std::vector<double> input_;
+  std::function<double(double)> func;
+  double res={};
+  double integrate(const std::function<double(double)>& f, double a, double b, int n);
 };
 
 }  // namespace nesterov_a_test_task_seq
