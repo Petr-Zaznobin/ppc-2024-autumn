@@ -92,4 +92,3 @@ TEST(mpi_example_perf_test, test_task_run) {
     ASSERT_NEAR(res, expected_result, 1e-5);
   }
 }
-
