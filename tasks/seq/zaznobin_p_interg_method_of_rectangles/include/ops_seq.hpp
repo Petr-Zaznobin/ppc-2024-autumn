@@ -16,7 +16,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;  // Проверка на адектватность
   bool run() override;         // Тело программы
   bool post_processing() override;  // Выдать результаты в удобоваримом виде для пользователя
-  void get_func(const std::function<double(double)>& func);  // получение функция для интегрирования
+  void get_func(const std::function<double(double)>& f);  // получение функция для интегрирования
  private:
   double a = {};
   double b = {};
