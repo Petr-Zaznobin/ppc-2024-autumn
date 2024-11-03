@@ -18,7 +18,7 @@ std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;  // Обработать данные так, как мы хотим видеть в нашей программе
   bool validation() override;  // Проверка на адектватность
   bool run() override;         // Тело программы
