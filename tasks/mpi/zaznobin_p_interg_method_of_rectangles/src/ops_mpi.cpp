@@ -63,8 +63,8 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::post_pro
 }
 //--------------------------------------------------------------
 void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(
-    const std::function<double(double)>& func) {
-  func = f
+    const std::function<double(double)>& f) {
+  func = f;
 }
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::pre_processing() {
