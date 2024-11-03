@@ -48,8 +48,8 @@ class TestMPITaskParallel : public ppc::core::Task {
         double b={};
         double n={};
         std::function<double(double)> func;
-        double local_sum_{};
-        double gloval_res;
+        double local_sum_ = {};
+        double res = {};
         double integrate(const std::function<double(double)>& f, double a, double b, int n);
         //std::vector<int> input_, local_input_;
         boost::mpi::communicator world;
