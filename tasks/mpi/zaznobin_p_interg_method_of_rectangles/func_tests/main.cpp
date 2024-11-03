@@ -4,10 +4,14 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+#include <cmath>
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/zaznobin_p_interg_method_of_rectangles/include/ops_mpi.hpp"
 
-TEST(Parallel_Operations_MPI, Sin_mpi) {
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, Sin_mpi) {
   boost::mpi::communicator world;
 
   double a = 0.0;
@@ -66,7 +70,7 @@ TEST(Parallel_Operations_MPI, Sin_mpi) {
   }
 }
 
-TEST(Parallel_Operations_MPI, exp_mpi) {
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, exp_mpi) {
   boost::mpi::communicator world;
 
   double a = 0.0;
@@ -126,7 +130,7 @@ TEST(Parallel_Operations_MPI, exp_mpi) {
   }
 }
 
-TEST(Parallel_Operations_MPI, degree_mpi) {
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, degree_mpi) {
   boost::mpi::communicator world;
 
   double a = 0.0;
