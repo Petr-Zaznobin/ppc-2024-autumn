@@ -86,4 +86,3 @@ TEST(mpi_example_perf_test, test_task_run) {
     ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
-
