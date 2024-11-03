@@ -98,4 +98,3 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, test_task_run) {
   // Проверка полученного результата с ожидаемым
   EXPECT_NEAR(result, expected_result, 0.0001);
 }
-
