@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/zaznobin_p_interg_method_of_rectangles/include/ops_seq.hpp"
 
 TEST(zaznobin_p_interg_method_of_rectangles_seq, test_pipeline_run) {
   double a = 0.0;
