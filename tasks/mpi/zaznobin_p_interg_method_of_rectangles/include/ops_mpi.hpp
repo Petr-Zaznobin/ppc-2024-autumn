@@ -36,21 +36,23 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_): Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
+      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
   void get_func(const std::function<double(double)>& func);
+
  private:
-  double a={};
-  double b={};
-  double n={};
+  double a = {};
+  double b = {};
+  double n = {};
   std::function<double(double)> func;
   double gloval_res;
   double local_sum_{};
   double integrate(const std::function<double(double)>& f, double a, double b, int n);
-  //std::vector<int> input_, local_input_;
+  // std::vector<int> input_, local_input_;
   boost::mpi::communicator world;
 };
-}
+}  // namespace zaznobin_p_interg_method_of_rectangles_mpi

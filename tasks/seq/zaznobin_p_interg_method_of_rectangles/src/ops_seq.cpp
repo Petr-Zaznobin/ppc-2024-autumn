@@ -4,8 +4,9 @@
 
 using namespace std::chrono_literals;
 
-void zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::get_func(const std::function<double(double)>& func){
-    func = f;
+void zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::get_func(
+    const std::function<double(double)>& func) {
+  func = f;
 }
 
 bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::pre_processing() {
@@ -21,23 +22,24 @@ bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::pre_process
 
 bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::validation() {
   internal_order_test();
-  if (n <= 0 || b <= a){
-      cout << "Uncorrect start data";
-      return false;
+  if (n <= 0 || b <= a) {
+    cout << "Uncorrect start data";
+    return false;
   }
-  if !func{
-      cout << "Func didn't get";
-      return false;
+  if !func {
+    cout << "Func didn't get";
+    return false;
   }
   // Check count elements of output
   return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1
 }
 
-double zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::integrate(const std::function<double(double)>& f, double a, double b, int n){
+double zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::integrate(const std::function<double(double)>& f,
+                                                                                 double a, double b, int n) {
   double integral = 0.;
-  double h = (b-a)/n;
-  for (x = a; x <= b; x+=h){
-    integral+=func(x)*h;
+  double h = (b - a) / n;
+  for (x = a; x <= b; x += h) {
+    integral += func(x) * h;
   }
   return integral;
 }

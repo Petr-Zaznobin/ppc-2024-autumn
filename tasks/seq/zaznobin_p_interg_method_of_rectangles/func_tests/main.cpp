@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <cmath>
+#include <vector>
 
 #include "seq/zaznobin_p_interg_method_of_rectangles/include/ops_seq.hpp"
 
@@ -10,7 +10,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, degree_seq) {
   double b = 1.0;
   int n = 1000;
 
-  const double ans = 1/4;
+  const double ans = 1 / 4;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&a));
@@ -18,8 +18,8 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, degree_seq) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&n));
   taskDataSeq->inputs_count.emplace_back(3);
 
-  double res = 0.0; // Инициализируем значение результата
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res)); // Передаем указатель на результат
+  double res = 0.0;  // Инициализируем значение результата
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));  // Передаем указатель на результат
   taskDataSeq->outputs_count.emplace_back(1);
 
   zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
@@ -51,7 +51,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, sin_seq) {
   taskDataSeq->outputs_count.emplace_back(1);
 
   zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  std::function<double(double)> f = [](double x) { return std::sin(x);};
+  std::function<double(double)> f = [](double x) { return std::sin(x); };
   TestTaskSequential.get_func(f);
   ASSERT_TRUE(TestTaskSequential.validation());
   TestTaskSequential.pre_processing();
@@ -90,7 +90,6 @@ TEST(Sequential, exp_seq) {
 
   ASSERT_NEAR(res, ans, 1e-3);
 }
-
 
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);

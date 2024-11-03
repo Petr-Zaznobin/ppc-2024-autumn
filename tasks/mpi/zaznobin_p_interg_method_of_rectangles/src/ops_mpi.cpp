@@ -10,8 +10,8 @@
 
 using namespace std::chrono_literals;
 
-
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::get_func(const std::function<double(double)>& f){
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::get_func(
+    const std::function<double(double)>& f) {
   func = f;
 }
 
@@ -28,11 +28,11 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::pre_proc
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (n <= 0 || b <= a){
+  if (n <= 0 || b <= a) {
     std::cout << "Uncorrect start data";
     return false;
   }
-  if (!func){
+  if (!func) {
     std::cout << "Function not set" << std::endl;
     return false;
   }
@@ -40,11 +40,12 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::validati
   return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
 }
 
-double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::integrate(const std::function<double(double)>& f, double a, double b, int n){
+double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::integrate(
+    const std::function<double(double)>& f, double a, double b, int n) {
   double integral = 0.;
-  double h = (b-a)/n;
-  for (double x = a; x <= b; x+=h){
-    integral+=func(x)*h;
+  double h = (b - a) / n;
+  for (double x = a; x <= b; x += h) {
+    integral += func(x) * h;
   }
   return integral;
 }
@@ -61,7 +62,8 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::post_pro
   return true;
 }
 //--------------------------------------------------------------
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(const std::function<double(double)>& func){
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(
+    const std::function<double(double)>& func) {
   func = f
 }
 
@@ -125,14 +127,15 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::validation
   return true;
 }
 
-double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(const std::function<double(double)>& f, double a, double b, int n){
+double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(
+    const std::function<double(double)>& f, double a, double b, int n) {
   // Определяем количество процессов
   int num_procs = world.size();
   int rank = world.rank();
 
   // Вычисляем количество подынтервалов для каждого процесса
   int local_n = n / num_procs;  // Минимальное количество интервалов для каждого процесса
-  int remainder = n % num_procs; // Оставшиеся интервалы, которые нужно распределить
+  int remainder = n % num_procs;  // Оставшиеся интервалы, которые нужно распределить
 
   // Процессы с rank < remainder будут обрабатывать на один интервал больше
   if (rank < remainder) {
@@ -140,14 +143,14 @@ double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrat
   }
 
   // Определяем границы интегрирования для каждого процесса
-  double h = (b - a) / n; // Шаг по оси x
-  double local_a = a + rank * h * (n / num_procs); // Левый конец подынтервала
-  double local_b = local_a + local_n * h; // Правый конец подынтервала
+  double h = (b - a) / n;                           // Шаг по оси x
+  double local_a = a + rank * h * (n / num_procs);  // Левый конец подынтервала
+  double local_b = local_a + local_n * h;           // Правый конец подынтервала
 
   // Локальное вычисление интеграла по методу прямоугольников
   double integral = 0.;
   for (double x = local_a; x < local_b; x += h) {
-    integral += f(x) * h; // Метод прямоугольников
+    integral += f(x) * h;  // Метод прямоугольников
   }
 
   return integral;

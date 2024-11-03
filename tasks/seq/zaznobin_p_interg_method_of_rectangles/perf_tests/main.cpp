@@ -14,17 +14,18 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, test_pipeline_run) {
 
   // Настройка входных и выходных данных
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&a));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&b));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&n));
   taskDataSeq->inputs_count.emplace_back(3);
 
   double res = 0.0;
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&res));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));
   taskDataSeq->outputs_count.emplace_back(1);
 
   // Создание задачи и установка функции интегрирования
-  auto testTaskSequential = std::make_shared<zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential>(taskDataSeq);
   std::function<double(double)> func = [](double x) { return x * x; };
   testTaskSequential->get_func(func);
 
@@ -60,17 +61,18 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, test_task_run) {
 
   // Настройка TaskData с входными и выходными значениями
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&a));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&b));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&n));
   taskDataSeq->inputs_count.emplace_back(3);
 
   double result = 0.0;  // Значение для результата интегрирования
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result));
   taskDataSeq->outputs_count.emplace_back(1);
 
   // Создание задачи и установка функции
-  auto testTaskSequential = std::make_shared<zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential>(taskDataSeq);
   testTaskSequential->get_func([](double x) { return x * x; });
 
   // Настройка атрибутов производительности

@@ -121,7 +121,8 @@ TEST(Parallel_Operations_MPI, exp_mpi) {
 
     // Сравнение результатов параллельного и последовательного вычислений
     ASSERT_NEAR(global_result, sequential_result, 1e-5);
-    ASSERT_NEAR(global_result, (std::exp(2 * b) - std::exp(2 * a)) / 2.0, 1e-5);  // Сравнение с точным значением интеграла
+    ASSERT_NEAR(global_result, (std::exp(2 * b) - std::exp(2 * a)) / 2.0,
+                1e-5);  // Сравнение с точным значением интеграла
   }
 }
 
@@ -183,7 +184,6 @@ TEST(Parallel_Operations_MPI, degree_mpi) {
     ASSERT_NEAR(global_result, 60.75, 1e-5);  // Сравнение с точным значением интеграла
   }
 }
-
 
 int main(int argc, char** argv) {
   boost::mpi::environment env(argc, argv);
