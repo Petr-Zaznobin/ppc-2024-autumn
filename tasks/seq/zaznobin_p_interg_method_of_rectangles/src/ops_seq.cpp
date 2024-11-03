@@ -26,19 +26,19 @@ bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::validation(
     std::cout << "Uncorrect start data";
     return false;
   }
-  if !func {
+  if (!func) {
     std::cout << "Func didn't get";
     return false;
   }
   // Check count elements of output
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1
+  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
 }
 
 double zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::integrate(const std::function<double(double)>& f,
                                                                                  double a, double b, int n) {
   double integral = 0.;
   double h = (b - a) / n;
-  for (x = a; x <= b; x += h) {
+  for (double x = a; x <= b; x += h) {
     integral += func(x) * h;
   }
   return integral;
