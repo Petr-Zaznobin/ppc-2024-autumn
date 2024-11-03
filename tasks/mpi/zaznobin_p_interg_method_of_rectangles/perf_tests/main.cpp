@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/zaznobin_p_interg_method_of_rectangles/include/ops_mpi.hpp"
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
+TEST(zaznobin_p_interg_method_of_rectangles, test_pipeline_run) {
   boost::mpi::communicator world;
   double a = 0.0;
   double b = 1.0;
@@ -50,7 +50,7 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   }
 }
 
-TEST(mpi_example_perf_test, test_task_run) {
+TEST(zaznobin_p_interg_method_of_rectangles, test_task_run) {
   boost::mpi::communicator world;
   double a = 0.0;
   double b = 1.0;
