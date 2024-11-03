@@ -90,8 +90,3 @@ TEST(Sequential, exp_seq) {
 
   ASSERT_NEAR(res, ans, 1e-3);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
