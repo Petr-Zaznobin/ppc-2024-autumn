@@ -189,4 +189,3 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, degree_mpi) {
     ASSERT_NEAR(global_result, 60.75, 1e-5);  // Сравнение с точным значением интеграла
   }
 }
-
