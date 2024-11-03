@@ -32,18 +32,18 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::validati
         cout << "Uncorrect start data";
         return false;
     }
-    if !func{
+    if (!func){
         std::cout << "Function not set" << std::endl;
         return false;
         }
     // Check count elements of output
-    return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1
+    return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
 }
 
 double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::integrate(const std::function<double(double)>& f, double a, double b, int n){
     double integral = 0.;
     double h = (b-a)/n;
-    for (x = a; x <= b; x+=h){
+    for (double x = a; x <= b; x+=h){
         integral+=func(x)*h;
     }
     return integral;
@@ -61,7 +61,7 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::post_pro
     return true;
 }
 //--------------------------------------------------------------
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::get_func(const std::function<double(double)>& func){
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(const std::function<double(double)>& func){
     func = f
 }
 
@@ -100,7 +100,7 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::validation
         // Проверка корректности границ интегрирования
         double a_val = *reinterpret_cast<double*>(taskData->inputs[0]);
         double b_val = *reinterpret_cast<double*>(taskData->inputs[1]);
-        if (a >= b) {
+        if (a_val >= b_val) {
             std::cout << "a>=b" << std::endl;
             return false;
         }
