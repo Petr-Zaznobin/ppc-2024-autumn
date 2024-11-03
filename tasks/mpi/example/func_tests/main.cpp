@@ -226,4 +226,3 @@ TEST(Parallel_Operations_MPI, Test_Max_2) {
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
-
