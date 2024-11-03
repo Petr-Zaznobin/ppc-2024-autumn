@@ -119,4 +119,3 @@ TEST(Sequential, Test_Sum_100) {
   testTaskSequential.post_processing();
   ASSERT_EQ(count, out[0]);
 }
-
