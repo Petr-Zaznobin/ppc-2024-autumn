@@ -23,11 +23,11 @@ bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::pre_process
 bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::validation() {
   internal_order_test();
   if (n <= 0 || b <= a) {
-    cout << "Uncorrect start data";
+    std::cout << "Uncorrect start data";
     return false;
   }
   if !func {
-    cout << "Func didn't get";
+    std::cout << "Func didn't get";
     return false;
   }
   // Check count elements of output
