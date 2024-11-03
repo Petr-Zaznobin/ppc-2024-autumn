@@ -6,7 +6,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace zaznobin_p_interg_method_of_rectangles_seq {
+namespace nesterov_a_test_task_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
