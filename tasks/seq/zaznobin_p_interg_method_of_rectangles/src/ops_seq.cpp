@@ -5,7 +5,7 @@
 using namespace std::chrono_literals;
 
 void zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::get_func(
-    const std::function<double(double)>& func) {
+    const std::function<double(double)>& f) {
   func = f;
 }
 
