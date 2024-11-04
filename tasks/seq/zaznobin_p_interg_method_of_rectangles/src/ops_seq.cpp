@@ -51,6 +51,6 @@ bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::run() {
 
 bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<double*>(taskData->outputs[0])[0] = res;
   return true;
 }
