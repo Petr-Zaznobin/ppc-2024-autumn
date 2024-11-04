@@ -35,11 +35,14 @@ bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::validation(
 
 double zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::integrate(const std::function<double(double)>& f,
                                                                                  double a, double b, int n) {
-  double integral = 0.;
+  double integral = 0.0;
   double h = (b - a) / n;
-  for (double x = a; x < b; x += h) {
-    integral += func(x) * h;
+  
+  for (int i = 0; i < n; ++i) {
+    double x = a + i * h;  // или lower_bound, если нужно
+    integral += f(x) * h;
   }
+  
   return integral;
 }
 
