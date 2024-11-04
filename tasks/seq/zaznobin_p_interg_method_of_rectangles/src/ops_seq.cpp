@@ -29,7 +29,7 @@ bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::validation(
     std::cout << "Func didn't get";
     return false;
   }
-  if (taskData->inputs.size() < 3){
+  if (taskData->inputs.size() < 3) {
     std::cout << "Not enough input data";
     return false;
   }
