@@ -37,12 +37,10 @@ double zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::integrate
                                                                                  double a, double b, int n) {
   double integral = 0.0;
   double h = (b - a) / n;
-  
   for (int i = 0; i < n; ++i) {
-    double x = a + i * h;  // или lower_bound, если нужно
+    double x = a + i * h;
     integral += f(x) * h;
   }
-  
   return integral;
 }
 
