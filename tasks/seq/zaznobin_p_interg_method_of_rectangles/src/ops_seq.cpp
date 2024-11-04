@@ -21,13 +21,19 @@ bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::pre_process
 
 bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs.size() < 3 || !func) {
-    if (taskData->inputs.size() < 3) {
-      std::cout << "Validation failed: not enough input data." << std::endl;
-    }
+  if (n <= 0 || b <= a) {
+    std::cout << "Uncorrect start data";
     return false;
   }
-
+  if (!func) {
+    std::cout << "Func didn't get";
+    return false;
+  }
+  if (taskData->inputs.size() < 3){
+    std::cout << "Not enough input data";
+    return false;
+  }
+  // Check count elements of output
   return true;
 }
 
