@@ -30,7 +30,7 @@ bool zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::validation(
     return false;
   }
   // Check count elements of output
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] == 3 && taskData->outputs_count[0] == 1;
 }
 
 double zaznobin_p_interg_method_of_rectangles_seq::TestTaskSequential::integrate(const std::function<double(double)>& f,
