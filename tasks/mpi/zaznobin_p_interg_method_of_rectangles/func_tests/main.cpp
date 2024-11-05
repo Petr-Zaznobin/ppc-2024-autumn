@@ -62,6 +62,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Sin_mpi) {
     sequentialTask.run();
     sequentialTask.post_processing();
 
+    ASSERT_NEAR(sequential_result, 2.0, 1e-5);
     ASSERT_NEAR(global_result, 2.0, 1e-5);  // Сравнение с точным значением интеграла
     // Сравнение результатов параллельного и последовательного вычислений
     ASSERT_NEAR(global_result, sequential_result, 1e-5);
