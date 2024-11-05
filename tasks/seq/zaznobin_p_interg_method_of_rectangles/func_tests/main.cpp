@@ -67,7 +67,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, exp_seq) {
   int n = 1000;
 
   // Ожидаемый результат для интеграла exp(2x) от 0 до 1
-  const double ans = (std::exp(2) - 1) / 2;
+  const double ans = 3.19453;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&a));
