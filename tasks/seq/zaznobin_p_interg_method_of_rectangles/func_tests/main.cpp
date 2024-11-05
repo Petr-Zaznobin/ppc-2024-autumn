@@ -10,7 +10,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, degree_seq) {
   double b = 1.0;
   int n = 1000;
 
-  const double ans = 1 / 4;
+  const double ans = 0.25;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&a));
