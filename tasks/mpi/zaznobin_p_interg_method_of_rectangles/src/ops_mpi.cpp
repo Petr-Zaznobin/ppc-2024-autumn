@@ -125,8 +125,6 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::validation
 
 double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(
     const std::function<double(double)>& f, double a, double b, int n) {
-  double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(
-    const std::function<double(double)>& f, double a, double b, int n) {
   // Определяем количество процессов
   int num_procs = world.size();
   int rank = world.rank();
@@ -157,7 +155,7 @@ double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrat
 
   return local_sum;
 }
-}
+
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::run() {
   internal_order_test();
