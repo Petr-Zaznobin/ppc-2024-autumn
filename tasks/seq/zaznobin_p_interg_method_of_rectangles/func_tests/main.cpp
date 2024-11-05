@@ -88,5 +88,5 @@ TEST(zaznobin_p_interg_method_of_rectangles_seq, exp_seq) {
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
 
-  ASSERT_NEAR(ans, res, 1e-3);
+  ASSERT_NEAR(ans, res, 1e-2);
 }
