@@ -23,7 +23,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;  // Проверка на адектватность
   bool run() override;         // Тело программы
   bool post_processing() override;  // Выдать результаты в удобоваримом виде для пользователя
-  void get_func(const std::function<double(double)>& func);  // функция для интегрирования
+  void get_func(const std::function<double(double)>& f);  // функция для интегрирования
  private:
   double a = {};
   double b = {};
@@ -48,7 +48,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   double b = {};
   double n = {};
   std::function<double(double)> func;
-  double res;
+  double res = {};
   double local_sum_{};
   double integrate(const std::function<double(double)>& f, double a, double b, int n);
   // std::vector<int> input_, local_input_;
