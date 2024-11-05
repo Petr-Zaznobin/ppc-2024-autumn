@@ -29,11 +29,15 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::pre_proc
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   if (!func) {
-    std::cout << "Function not set" << std::endl;
+    std::cout << "Func didn't get";
+    return false;
+  }
+  if (taskData->inputs.size() < 3) {
+    std::cout << "Not enough input data";
     return false;
   }
   // Check count elements of output
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
+  return true;
 }
 
 double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::integrate(
