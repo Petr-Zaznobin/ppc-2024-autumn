@@ -26,11 +26,8 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Sin_mpi) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_result));
     taskDataPar->outputs_count.emplace_back(1);
   }
@@ -65,9 +62,9 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Sin_mpi) {
     sequentialTask.run();
     sequentialTask.post_processing();
 
+    ASSERT_NEAR(global_result, 2.0, 1e-5);  // Сравнение с точным значением интеграла
     // Сравнение результатов параллельного и последовательного вычислений
     ASSERT_NEAR(global_result, sequential_result, 1e-5);
-    ASSERT_NEAR(global_result, 2.0, 1e-5);  // Сравнение с точным значением интеграла
   }
 }
 
