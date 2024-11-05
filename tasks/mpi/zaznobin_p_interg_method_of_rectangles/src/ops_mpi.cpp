@@ -156,7 +156,6 @@ double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrat
   return local_sum;
 }
 
-
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
