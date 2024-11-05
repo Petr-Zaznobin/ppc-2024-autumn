@@ -1,6 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/zaznobin_p_interg_method_of_rectangles/include/ops_mpi.hpp"
 
+#include <mpi.h>
+
 #include <algorithm>
 #include <functional>
 #include <random>
@@ -144,12 +146,8 @@ double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrat
     local_num_intervals += 1;
   }
   // Вычисляем начальную точку интегрирования для каждого процесса
-  double local_start = a + rank * (n / num_procs) * width;
-  if (rank < remainder) {
-    local_start += rank * width;  // Добавляем смещение для процессов с дополнительным интервалом
-  } else {
-    local_start += remainder * width;  // Смещение для остальных процессов
-  }
+  double local_start = a + rank * local_num_intervals * width;
+  
   // Локальное вычисление интеграла по методу прямоугольников
   double local_sum = 0.0;
   for (int i = 0; i < local_num_intervals; ++i) {
