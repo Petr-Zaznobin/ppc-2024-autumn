@@ -18,8 +18,8 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Sin_mpi) {
   double a = 0.0;
   double b = M_PI;
   int n = 1000;
-  auto global_result = std::make_shared<double>(0.0);
-  auto sequential_result = std::make_shared<double>(0.0);
+  double global_result = 0.0;
+  double sequential_result = 30;
 
   // Создаем объект TaskData для параллельной задачи
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -28,7 +28,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Sin_mpi) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.get()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_result));
     taskDataPar->outputs_count.emplace_back(1);
   }
 
@@ -50,7 +50,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Sin_mpi) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(sequential_result.get()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&sequential_result));
     taskDataSeq->outputs_count.emplace_back(1);
 
     // Последовательная задача
@@ -61,11 +61,11 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Sin_mpi) {
     sequentialTask.pre_processing();
     sequentialTask.run();
     sequentialTask.post_processing();
-    // Проверка результатов
-    ASSERT_NEAR(*sequential_result, 2.0, 1e-5);
-    ASSERT_NEAR(*global_result, 2.0, 1e-5);  // Сравнение с точным значением интеграла
-    ASSERT_NEAR(*global_result, *sequential_result,
-                1e-5);  // Сравнение результатов параллельного и последовательного вычислений
+
+    ASSERT_NEAR(sequential_result, 2.0, 1e-5);
+    ASSERT_NEAR(global_result, 2.0, 1e-5);  // Сравнение с точным значением интеграла
+    // Сравнение результатов параллельного и последовательного вычислений
+    ASSERT_NEAR(global_result, sequential_result, 1e-5);
   }
 }
 
