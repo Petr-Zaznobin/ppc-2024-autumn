@@ -1,3 +1,4 @@
+
 #include "mpi/zaznobin_p_interg_method_of_rectangles/include/ops_mpi.hpp"
 
 #include <mpi.h>
@@ -11,11 +12,13 @@
 
 using namespace std::chrono_literals;
 
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::function_set(const std::function<double(double)>& func) {
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::function_set(
+    const std::function<double(double)>& func) {
   f = func;
 }
 
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::function_set(const std::function<double(double)>& func) {
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::function_set(
+    const std::function<double(double)>& func) {
   f = func;
 }
 
@@ -72,9 +75,8 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::post_pro
   return true;
 }
 
-double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(const std::function<double(double)>& f_,
-                                                                     double lower_bound_, double upper_bound_,
-                                                                     int num_intervals_) {
+double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(
+    const std::function<double(double)>& f_, double lower_bound_, double upper_bound_, int num_intervals_) {
   int rank = world.rank();
   int size = world.size();
 
