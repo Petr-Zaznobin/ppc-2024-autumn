@@ -100,7 +100,7 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::pre_proces
 
   unsigned int d = 0;
   if (world.rank() == 0) {
-    d = num_intervals / world.size();
+    d = n / world.size();
   }
   MPI_Bcast(&d, 1, MPI_UNSIGNED, 0, world);
 
