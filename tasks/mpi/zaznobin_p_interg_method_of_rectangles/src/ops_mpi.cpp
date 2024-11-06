@@ -11,13 +11,12 @@
 
 using namespace std::chrono_literals;
 
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::get_func(
-    const std::function<double(double)>& f) {
-  func = f;
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::get_func(const std::function<double(double)>& func) {
+  f = func;
 }
 
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(const std::function<double(double)>& f) {
-  func = f;
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(const std::function<double(double)>& func) {
+  f = func;
 }
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::pre_processing() {
@@ -57,7 +56,7 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::run() {
 
   for (int i = 0; i < n; i++) {
     double x = a + i * delta;
-    sum += func(x) * delta;
+    sum += f(x) * delta;
   }
   results_[0] = sum;
 
@@ -89,7 +88,7 @@ double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrat
   double local_sum = 0.0;
   for (int i = 0; i < local_n; i++) {
     double x = local_start + i * delta;
-    local_sum += func(x) * delta;
+    local_sum += f(x) * delta;
   }
 
   return local_sum;
@@ -141,7 +140,7 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::validation
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  local_sum_ = integrate(func, a, b, n);
+  local_sum_ = integrate(f, a, b, n);
   MPI_Reduce(&a, &b, 1, MPI_DOUBLE, MPI_SUM, 0, world);
   return true;
 }
