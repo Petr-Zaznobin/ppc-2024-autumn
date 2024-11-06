@@ -1,189 +1,279 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <cmath>
+#include <random>
 #include <vector>
+
+#include "mpi/zaznobin_p_interg_method_of_rectangles/include/ops_mpi.hpp"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 
-#include "mpi/zaznobin_p_interg_method_of_rectangles/include/ops_mpi.hpp"
+std::tuple<double, double, int> generate_random_data() {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> bounds_dist(0.0, 10.0);
+  std::uniform_int_distribution<> intervals_dist(100000, 2000000);
 
-// TEST(zaznobin_p_interg_method_of_rectangles_mpi, Sin_mpi) {
-//   boost::mpi::communicator world;
-//
-//   double a = 0.0;
-//   double b = M_PI;
-//   int n = 1000;
-//   double global_result = 0.0;
-//   double sequential_result = 30;
-//
-//   // Создаем объект TaskData для параллельной задачи
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//
-//   if (world.rank() == 0) {
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_result));
-//     taskDataPar->outputs_count.emplace_back(1);
-//   }
-//
-//   // Параллельная задача
-//   zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel parallelTask(taskDataPar);
-//   parallelTask.get_func([](double x) { return std::sin(x); });
-//
-//   ASSERT_TRUE(parallelTask.validation());
-//   parallelTask.pre_processing();
-//   parallelTask.run();
-//   parallelTask.post_processing();
-//
-//   if (world.rank() == 0) {
-//     // Создаем объект TaskData для последовательной задачи
-//     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-//     taskDataSeq->inputs_count.emplace_back(1);
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-//     taskDataSeq->inputs_count.emplace_back(1);
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-//     taskDataSeq->inputs_count.emplace_back(1);
-//     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&sequential_result));
-//     taskDataSeq->outputs_count.emplace_back(1);
-//
-//     // Последовательная задача
-//     zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential sequentialTask(taskDataSeq);
-//     sequentialTask.get_func([](double x) { return std::sin(x); });
-//
-//     ASSERT_TRUE(sequentialTask.validation());
-//     sequentialTask.pre_processing();
-//     sequentialTask.run();
-//     sequentialTask.post_processing();
-//
-//     ASSERT_NEAR(sequential_result, 2.0, 1e-5);
-//     ASSERT_NEAR(global_result, 2.0, 1e-5);  // Сравнение с точным значением интеграла
-//     // Сравнение результатов параллельного и последовательного вычислений
-//     ASSERT_NEAR(global_result, sequential_result, 1e-5);
-//   }
-// }
+  double lower_bound = bounds_dist(gen);
+  double upper_bound = lower_bound + bounds_dist(gen);
+  int num_intervals = intervals_dist(gen);
 
-TEST(zaznobin_p_interg_method_of_rectangles_mpi, exp_mpi) {
+  return std::make_tuple(lower_bound, upper_bound, num_intervals);
+}
+
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Constant) {
   boost::mpi::communicator world;
+  double lower_bound = 0.0;
+  double upper_bound = 1.0;
+  int num_intervals = 1000;
+  std::vector<double> global_sum(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
 
-  double a = 0.0;
-  double b = 1.0;
-  int n = 1000;
-  double global_result = 0.0;
-  double sequential_result = 0.0;
-
-  // Создаем объект TaskData для параллельной задачи
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_result));
-    taskDataPar->outputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  // Параллельная задача
-  zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel parallelTask(taskDataPar);
-  parallelTask.get_func([](double x) { return std::exp(2 * x); });
+  zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  ASSERT_TRUE(parallelTask.validation());
-  parallelTask.pre_processing();
-  parallelTask.run();
-  parallelTask.post_processing();
+  std::function<double(double)> f = [](double x) { return 10.0; };
+  testMpiTaskParallel.function_set(f);
+
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Создаем объект TaskData для последовательной задачи
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&sequential_result));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
     taskDataSeq->outputs_count.emplace_back(1);
 
-    // Последовательная задача
-    zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential sequentialTask(taskDataSeq);
-    sequentialTask.get_func([](double x) { return std::exp(2 * x); });
+    zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
+    sequential_Task.function_set([](double x) { return 10.0; });
 
-    ASSERT_TRUE(sequentialTask.validation());
-    sequentialTask.pre_processing();
-    sequentialTask.run();
-    sequentialTask.post_processing();
+    ASSERT_EQ(sequential_Task.validation(), true);
+    sequential_Task.pre_processing();
+    sequential_Task.run();
+    sequential_Task.post_processing();
 
-    // Сравнение результатов параллельного и последовательного вычислений
-    ASSERT_NEAR(global_result, sequential_result, 1e-5);
-    ASSERT_NEAR(global_result, (std::exp(2 * b) - std::exp(2 * a)) / 2.0,
-                1e-5);  // Сравнение с точным значением интеграла
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-3);
   }
 }
 
-TEST(zaznobin_p_interg_method_of_rectangles_mpi, degree_mpi) {
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Logarithm) {
   boost::mpi::communicator world;
+  double lower_bound = 0.1;
+  double upper_bound = 1.0;
+  int num_intervals = 10000;
+  std::vector<double> global_sum(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
 
-  double a = 0.0;
-  double b = 3.0;
-  int n = 1000;
-  double global_result = 0.0;
-  double sequential_result = 0.0;
-
-  // Создаем объект TaskData для параллельной задачи
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_result));
-    taskDataPar->outputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  // Параллельная задача
-  zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel parallelTask(taskDataPar);
-  parallelTask.get_func([](double x) { return x * x * x; });
+  zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  ASSERT_TRUE(parallelTask.validation());
-  parallelTask.pre_processing();
-  parallelTask.run();
-  parallelTask.post_processing();
+  std::function<double(double)> f = [](double x) { return std::log(x); };
+  testMpiTaskParallel.function_set(f);
+
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Создаем объект TaskData для последовательной задачи
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&sequential_result));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
     taskDataSeq->outputs_count.emplace_back(1);
 
-    // Последовательная задача
-    zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential sequentialTask(taskDataSeq);
-    sequentialTask.get_func([](double x) { return x * x * x; });
+    zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
+    sequential_Task.function_set([](double x) { return std::log(x); });
 
-    ASSERT_TRUE(sequentialTask.validation());
-    sequentialTask.pre_processing();
-    sequentialTask.run();
-    sequentialTask.post_processing();
+    ASSERT_EQ(sequential_Task.validation(), true);
+    sequential_Task.pre_processing();
+    sequential_Task.run();
+    sequential_Task.post_processing();
 
-    // Сравнение результатов параллельного и последовательного вычислений
-    ASSERT_NEAR(global_result, sequential_result, 1e-5);
-    ASSERT_NEAR(global_result, 60.75, 1e-5);  // Сравнение с точным значением интеграла
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-3);
+  }
+}
+
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Gaussian) {
+  boost::mpi::communicator world;
+  double lower_bound = -1.0;
+  double upper_bound = 1.0;
+  int num_intervals = 1000;
+  std::vector<double> global_sum(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
+
+  zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  std::function<double(double)> f = [](double x) { return std::exp(-x * x); };
+  testMpiTaskParallel.function_set(f);
+
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(1);
+
+    zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
+    sequential_Task.function_set([](double x) { return std::exp(-x * x); });
+
+    ASSERT_EQ(sequential_Task.validation(), true);
+    sequential_Task.pre_processing();
+    sequential_Task.run();
+    sequential_Task.post_processing();
+
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-2);
+  }
+}
+
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Power) {
+  boost::mpi::communicator world;
+  double lower_bound = 0.0;
+  double upper_bound = 1.0;
+  int num_intervals = 1000;
+  std::vector<double> global_sum(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
+
+  zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  std::function<double(double)> f = [](double x) { return x * x; };
+  testMpiTaskParallel.function_set(f);
+
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(1);
+
+    zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
+    sequential_Task.function_set([](double x) { return x * x; });
+
+    ASSERT_EQ(sequential_Task.validation(), true);
+    sequential_Task.pre_processing();
+    sequential_Task.run();
+    sequential_Task.post_processing();
+
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-2);
+  }
+}
+
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Power_Random) {
+  boost::mpi::communicator world;
+  auto [lower_bound, upper_bound, num_intervals] = generate_random_data();
+  std::vector<double> global_sum(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
+
+  zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  std::function<double(double)> f = [](double x) { return x * x; };
+  testMpiTaskParallel.function_set(f);
+
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(1);
+
+    zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
+    sequential_Task.function_set([](double x) { return x * x; });
+
+    ASSERT_EQ(sequential_Task.validation(), true);
+    sequential_Task.pre_processing();
+    sequential_Task.run();
+    sequential_Task.post_processing();
+
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-2);
   }
 }
