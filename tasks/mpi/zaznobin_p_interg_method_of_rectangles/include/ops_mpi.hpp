@@ -14,24 +14,23 @@
 
 namespace zaznobin_p_interg_method_of_rectangles_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool pre_processing() override;  // Обработать данные так, как мы хотим видеть в нашей программе
-  bool validation() override;  // Проверка на адектватность
-  bool run() override;         // Тело программы
-  bool post_processing() override;  // Выдать результаты в удобоваримом виде для пользователя
-  void get_func(const std::function<double(double)>& f);  // функция для интегрирования
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
+
+  void function_set(const std::function<double(double)>& func);
+
  private:
-  double a = {};
-  double b = {};
-  double n = {};
-  // std::vector<double> input_;
-  std::function<double(double)> func;
-  double res;
-  double integrate(const std::function<double(double)>& f, double a, double b, int n);
+  double lower_bound{};
+  double upper_bound{};
+  int num_intervals{};
+  std::function<double(double)> f;
+  std::vector<double> input_;
+  std::vector<double> results_;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -41,17 +40,21 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void get_func(const std::function<double(double)>& func);
+
+  void function_set(const std::function<double(double)>& func);
 
  private:
-  double a = {};
-  double b = {};
-  double n = {};
-  std::function<double(double)> func;
-  double res = {};
+  double integrate(const std::function<double(double)>& f_, double lower_bound_, double upper_bound_,
+                   int num_intervals_);
+  double lower_bound{};
+  double upper_bound{};
   double local_sum_{};
-  double integrate(const std::function<double(double)>& f, double a, double b, int n);
-  // std::vector<int> input_, local_input_;
+  double global_sum_{};
+  int num_intervals{};
+  std::function<double(double)> f;
+  std::vector<double> input_;
+  std::vector<double> results_;
   boost::mpi::communicator world;
 };
-}  // namespace zaznobin_p_interg_method_of_rectangles_mpi
+
+} 
