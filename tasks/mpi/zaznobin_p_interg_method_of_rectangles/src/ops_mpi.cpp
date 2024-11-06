@@ -1,6 +1,4 @@
-
-// Copyright 2024 Lupsha Egor
-#include "mpi/lupsha_e_rect_integration/include/ops_mpi.hpp"
+#include "mpi/zaznobin_p_interg_method_of_rectangles/include/ops_mpi.hpp"
 
 #include <mpi.h>
 
@@ -13,15 +11,15 @@
 
 using namespace std::chrono_literals;
 
-void lupsha_e_rect_integration_mpi::TestMPITaskSequential::function_set(const std::function<double(double)>& func) {
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::function_set(const std::function<double(double)>& func) {
   f = func;
 }
 
-void lupsha_e_rect_integration_mpi::TestMPITaskParallel::function_set(const std::function<double(double)>& func) {
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::function_set(const std::function<double(double)>& func) {
   f = func;
 }
 
-bool lupsha_e_rect_integration_mpi::TestMPITaskSequential::pre_processing() {
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
   lower_bound = *reinterpret_cast<double*>(taskData->inputs[0]);
@@ -33,7 +31,7 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskSequential::pre_processing() {
   return true;
 }
 
-bool lupsha_e_rect_integration_mpi::TestMPITaskSequential::validation() {
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
   if (taskData->inputs.size() < 3) {
@@ -51,7 +49,7 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskSequential::validation() {
   return true;
 }
 
-bool lupsha_e_rect_integration_mpi::TestMPITaskSequential::run() {
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
   double width = (upper_bound - lower_bound) / num_intervals;
@@ -67,14 +65,14 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskSequential::run() {
   return true;
 }
 
-bool lupsha_e_rect_integration_mpi::TestMPITaskSequential::post_processing() {
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   *reinterpret_cast<double*>(taskData->outputs[0]) = results_[0];
 
   return true;
 }
 
-double lupsha_e_rect_integration_mpi::TestMPITaskParallel::integrate(const std::function<double(double)>& f_,
+double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(const std::function<double(double)>& f_,
                                                                      double lower_bound_, double upper_bound_,
                                                                      int num_intervals_) {
   int rank = world.rank();
@@ -99,7 +97,7 @@ double lupsha_e_rect_integration_mpi::TestMPITaskParallel::integrate(const std::
   return local_sum;
 }
 
-bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::pre_processing() {
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   unsigned int d = 0;
@@ -121,7 +119,7 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::validation() {
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     if (taskData->inputs.size() < 3) {
@@ -146,14 +144,14 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::validation() {
   return true;
 }
 
-bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::run() {
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   local_sum_ = integrate(f, lower_bound, upper_bound, num_intervals);
   MPI_Reduce(&local_sum_, &global_sum_, 1, MPI_DOUBLE, MPI_SUM, 0, world);
   return true;
 }
 
-bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::post_processing() {
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_sum_;
