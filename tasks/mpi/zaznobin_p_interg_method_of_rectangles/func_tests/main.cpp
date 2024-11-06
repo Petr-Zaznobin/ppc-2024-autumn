@@ -18,11 +18,11 @@ std::tuple<double, double, int> generate_random_data() {
   std::uniform_real_distribution<> bounds_dist(0.0, 10.0);
   std::uniform_int_distribution<> intervals_dist(100000, 2000000);
 
-  double lower_bound = bounds_dist(gen);
-  double upper_bound = lower_bound + bounds_dist(gen);
-  int num_intervals = intervals_dist(gen);
+  double a = bounds_dist(gen);
+  double b = a + bounds_dist(gen);
+  int n = intervals_dist(gen);
 
-  return std::make_tuple(lower_bound, upper_bound, num_intervals);
+  return std::make_tuple(a, b, n);
 }
 
 TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Constant) {
