@@ -5,6 +5,10 @@
 
 #include "seq/zaznobin_p_interg_method_of_rectangles/include/ops_seq.hpp"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 TEST(zaznobin_p_interg_method_of_rectangles_seq, degree_seq) {
   double a = 0.0;
   double b = 1.0;
