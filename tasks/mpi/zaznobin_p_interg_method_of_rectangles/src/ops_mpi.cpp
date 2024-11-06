@@ -13,11 +13,10 @@ using namespace std::chrono_literals;
 
 void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::get_func(
     const std::function<double(double)>& f) {
-  func= f;
+  func = f;
 }
 
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(
-    const std::function<double(double)>& f) {
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(const std::function<double(double)>& f) {
   func = f;
 }
 
