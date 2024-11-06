@@ -1,6 +1,3 @@
-
-// Copyright 2024 Lupsha Egor
-
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -8,7 +5,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/lupsha_e_rect_integration/include/ops_mpi.hpp"
+#include "mpi/zaznobin_p_interg_method_of_rectangles/include/ops_mpi.hpp"
 
 std::tuple<double, double, int> generate_random_data() {
   std::random_device rd;
@@ -23,7 +20,7 @@ std::tuple<double, double, int> generate_random_data() {
   return std::make_tuple(lower_bound, upper_bound, num_intervals);
 }
 
-TEST(lupsha_e_rect_integration_mpi, test_pipeline_run) {
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   double lower_bound = 0.0;
   double upper_bound = 1.0;
@@ -65,7 +62,7 @@ TEST(lupsha_e_rect_integration_mpi, test_pipeline_run) {
   }
 }
 
-TEST(lupsha_e_rect_integration_mpi, test_task_run) {
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, test_task_run) {
   boost::mpi::communicator world;
   double lower_bound = 0.0;
   double upper_bound = 1.0;
@@ -107,7 +104,7 @@ TEST(lupsha_e_rect_integration_mpi, test_task_run) {
   }
 }
 
-TEST(lupsha_e_rect_integration_mpi, test_pipeline_run_random) {
+TEST(zaznobin_p_interg_method_of_rectangles_mpi, test_pipeline_run_random) {
   boost::mpi::communicator world;
   auto [lower_bound, upper_bound, num_intervals] = generate_random_data();
   std::vector<double> global_sum(1, 0.0);
