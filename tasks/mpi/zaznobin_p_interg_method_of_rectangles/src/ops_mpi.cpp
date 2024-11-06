@@ -80,7 +80,7 @@ double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrat
   int local_n = n / w_size;
   int remainder = n % w_size;
 
-  if (rank < remainder) {
+  if (w_rank < remainder) {
     local_n += 1;
   }
 
