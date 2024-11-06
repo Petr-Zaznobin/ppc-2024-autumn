@@ -1,3 +1,4 @@
+
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -37,7 +38,8 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel>(taskDataPar);
   testMpiTaskParallel->function_set([](double x) { return x * x; });
 
   ASSERT_TRUE(testMpiTaskParallel->validation());
@@ -79,7 +81,8 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel>(taskDataPar);
   testMpiTaskParallel->function_set([](double x) { return x * x; });
 
   ASSERT_TRUE(testMpiTaskParallel->validation());
@@ -119,7 +122,8 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, test_pipeline_run_random) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel>(taskDataPar);
   testMpiTaskParallel->function_set([](double x) { return x * x; });
 
   ASSERT_TRUE(testMpiTaskParallel->validation());
