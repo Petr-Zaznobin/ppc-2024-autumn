@@ -15,7 +15,7 @@ std::tuple<double, double, int> generate_random_data() {
 
   double a = bounds_dist(gen);
   double b = a + bounds_dist(gen);
-  int num_intervals = intervals_dist(gen);
+  int n = intervals_dist(gen);
 
   return std::make_tuple(a, b, n);
 }
