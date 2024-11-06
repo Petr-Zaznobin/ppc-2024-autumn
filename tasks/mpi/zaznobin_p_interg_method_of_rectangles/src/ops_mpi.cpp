@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/zaznobin_p_interg_method_of_rectangles/include/ops_mpi.hpp"
 
 #include <mpi.h>
@@ -12,142 +11,83 @@
 
 using namespace std::chrono_literals;
 
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::get_func(
-    const std::function<double(double)>& f) {
-  func = f;
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::function_set(const std::function<double(double)>& func) {
+  f = func;
+}
+
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::function_set(const std::function<double(double)>& func) {
+  f = func;
 }
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  // Init value for input and output
-  // Инициализация значений a, b и n из taskData
-  a = *reinterpret_cast<double*>(taskData->inputs[0]);
-  b = *reinterpret_cast<double*>(taskData->inputs[1]);
-  n = *reinterpret_cast<int*>(taskData->inputs[2]);
-  res = 0.0;  // Инициализация результата
+
+  lower_bound = *reinterpret_cast<double*>(taskData->inputs[0]);
+  upper_bound = *reinterpret_cast<double*>(taskData->inputs[1]);
+  num_intervals = *reinterpret_cast<int*>(taskData->inputs[2]);
+
+  results_.resize(1, 0.0);
+
   return true;
 }
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (!func) {
-    std::cout << "Func didn't get";
-    return false;
-  }
-  if (taskData->inputs.size() < 3) {
-    std::cout << "Not enough input data";
-    return false;
-  }
-  // Check count elements of output
-  return true;
-}
 
-double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::integrate(
-    const std::function<double(double)>& f, double a, double b, int n) {
-  double integral = 0.0;
-  double h = (b - a) / n;
-  for (int i = 0; i < n; ++i) {
-    double x = a + i * h;
-    integral += f(x) * h;
+  if (taskData->inputs.size() < 3) {
+    return false;
+    std::cout << "Validation failed: not enough input data." << std::endl;
   }
-  return integral;
+
+  double validation_lower_bound = *reinterpret_cast<double*>(taskData->inputs[0]);
+  double validation_upper_bound = *reinterpret_cast<double*>(taskData->inputs[1]);
+  if (validation_lower_bound >= validation_upper_bound) {
+    std::cout << "Validation failed: lower_bound >= upper_bound." << std::endl;
+    return false;
+  }
+
+  return true;
 }
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  res = integrate(func, a, b, n);
+
+  double width = (upper_bound - lower_bound) / num_intervals;
+  input_.resize(num_intervals);
+  double sum = 0.0;
+
+  for (int i = 0; i < num_intervals; ++i) {
+    double x = lower_bound + i * width;
+    sum += f(x) * width;
+  }
+  results_[0] = sum;
+
   return true;
 }
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
-  return true;
-}
-//--------------------------------------------------------------
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(const std::function<double(double)>& f) {
-  func = f;
-}
-
-bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::pre_processing() {
-  internal_order_test();
-
-  // На процессе с rank 0 инициализируем значения
-  if (world.rank() == 0) {
-    auto* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
-    auto* tmp_ptr_b = reinterpret_cast<double*>(taskData->inputs[1]);
-    auto* tmp_ptr_n = reinterpret_cast<int*>(taskData->inputs[2]);
-
-    a = *tmp_ptr_a;  // Инициализация a
-    b = *tmp_ptr_b;  // Инициализация b
-    n = *tmp_ptr_n;  // Инициализация n
-  }
-
-  // Распространяем значения a, b и n среди всех процессов
-  MPI_Bcast(&a, 1, MPI_DOUBLE, 0, world);
-  MPI_Bcast(&b, 1, MPI_DOUBLE, 0, world);
-  MPI_Bcast(&n, 1, MPI_INT, 0, world);
+  *reinterpret_cast<double*>(taskData->outputs[0]) = results_[0];
 
   return true;
 }
 
-bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-
-  if (world.rank() == 0) {
-    // Проверка, что достаточно входных данных
-    if (taskData->inputs.size() < 3) {
-      std::cout << "not enough input data" << std::endl;
-      return false;
-    }
-
-    // Проверка корректности границ интегрирования
-    double a_val = *reinterpret_cast<double*>(taskData->inputs[0]);
-    double b_val = *reinterpret_cast<double*>(taskData->inputs[1]);
-    if (a_val >= b_val) {
-      std::cout << "a>=b" << std::endl;
-      return false;
-    }
-
-    // Проверка, что количество интервалов положительное
-    int n_val = *reinterpret_cast<int*>(taskData->inputs[2]);
-    if (n_val <= 0) {
-      std::cout << "n <= 0." << std::endl;
-      return false;
-    }
-
-    // Проверка, что функция для интегрирования задана
-    if (!func) {
-      std::cout << "integration function is not set." << std::endl;
-      return false;
-    }
-  }
-
-  // Обеспечиваем синхронизацию всех процессов перед выполнением расчета
-  MPI_Barrier(world);
-
-  return true;
-}
-
-double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(
-    const std::function<double(double)>& f, double a, double b, int n) {
-  // Определяем количество процессов
-  int num_procs = world.size();
+double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(const std::function<double(double)>& f_,
+                                                                     double lower_bound_, double upper_bound_,
+                                                                     int num_intervals_) {
   int rank = world.rank();
+  int size = world.size();
 
-  double width = (b - a) / n;  // Шаг по оси x для метода прямоугольников
+  double width = (upper_bound_ - lower_bound_) / num_intervals_;
+  int local_num_intervals = num_intervals_ / size;
+  int remainder = num_intervals_ % size;
 
-  // Минимальное количество интервалов для каждого процесса
-  int local_num_intervals = n / num_procs;
-  int remainder = n % num_procs;
-
-  // Процессы с rank < remainder будут обрабатывать на один интервал больше
   if (rank < remainder) {
-    local_num_intervals += 1;
+    local_num_intervals = local_num_intervals + 1;
   }
-  // Вычисляем начальную точку интегрирования для каждого процесса
-  double local_start = a + rank * local_num_intervals * width;
-  // Локальное вычисление интеграла по методу прямоугольников
+
+  double local_start = lower_bound_ + rank * local_num_intervals * width;
+
   double local_sum = 0.0;
   for (int i = 0; i < local_num_intervals; ++i) {
     double x = local_start + i * width;
@@ -157,22 +97,65 @@ double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrat
   return local_sum;
 }
 
-bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::run() {
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  // Локальное вычисление интеграла
-  local_sum_ = integrate(func, a, b, n);
+  unsigned int d = 0;
+  if (world.rank() == 0) {
+    d = num_intervals / world.size();
+  }
+  MPI_Bcast(&d, 1, MPI_UNSIGNED, 0, world);
 
-  // Сбор результатов
-  MPI_Reduce(&local_sum_, &res, 1, MPI_DOUBLE, MPI_SUM, 0, world);
+  if (world.rank() == 0) {
+    lower_bound = *reinterpret_cast<double*>(taskData->inputs[0]);
+    upper_bound = *reinterpret_cast<double*>(taskData->inputs[1]);
+    num_intervals = *reinterpret_cast<int*>(taskData->inputs[2]);
+  }
 
+  MPI_Bcast(&lower_bound, 1, MPI_DOUBLE, 0, world);
+  MPI_Bcast(&upper_bound, 1, MPI_DOUBLE, 0, world);
+  MPI_Bcast(&num_intervals, 1, MPI_INT, 0, world);
+
+  return true;
+}
+
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    if (taskData->inputs.size() < 3) {
+      std::cout << "Validation failed: not enough input data." << std::endl;
+      return false;
+    }
+
+    double validation_lower_bound = *reinterpret_cast<double*>(taskData->inputs[0]);
+    double validation_upper_bound = *reinterpret_cast<double*>(taskData->inputs[1]);
+    if (validation_lower_bound >= validation_upper_bound) {
+      std::cout << "Validation failed: lower_bound >= upper_bound." << std::endl;
+      return false;
+    }
+
+    int validation_num_intervals = *reinterpret_cast<int*>(taskData->inputs[2]);
+    if (validation_num_intervals <= 0) {
+      std::cout << "Validation failed: num_intervals <= 0." << std::endl;
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+  local_sum_ = integrate(f, lower_bound, upper_bound, num_intervals);
+  MPI_Reduce(&local_sum_, &global_sum_, 1, MPI_DOUBLE, MPI_SUM, 0, world);
   return true;
 }
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    *reinterpret_cast<double*>(taskData->outputs[0]) = res;
+    *reinterpret_cast<double*>(taskData->outputs[0]) = global_sum_;
   }
+
   return true;
 }
