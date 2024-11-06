@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <gtest/gtest.h>
@@ -44,8 +45,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   void get_func(const std::function<double(double)>& f);
 
  private:
-  double integrate(const std::function<double(double)>& f_, double a, double b,
-                   int n);
+  double integrate(const std::function<double(double)>& f_, double a, double b, int n);
   double a{};
   double b{};
   double local_sum_ = {};
