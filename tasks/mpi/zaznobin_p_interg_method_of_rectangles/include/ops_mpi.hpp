@@ -23,13 +23,13 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void get_func(const std::function<double(double)>& f);
+  void get_func(const std::function<double(double)>& func);
 
  private:
   double a = {};
   double b = {};
   int n = {};
-  std::function<double(double)> func;
+  std::function<double(double)> f;
   std::vector<double> input_;
   std::vector<double> results_;
 };
@@ -42,7 +42,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void get_func(const std::function<double(double)>& f);
+  void get_func(const std::function<double(double)>& func);
 
  private:
   double integrate(const std::function<double(double)>& f_, double a, double b, int n);
@@ -51,7 +51,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   double local_sum_ = {};
   double global_sum_ = {};
   int n = {};
-  std::function<double(double)> func;
+  std::function<double(double)> f;
   std::vector<double> input_;
   std::vector<double> results_;
   boost::mpi::communicator world;
