@@ -1,4 +1,5 @@
 
+// Copyright 2024 Lupsha Egor
 #pragma once
 
 #include <gtest/gtest.h>
@@ -13,7 +14,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace zaznobin_p_interg_method_of_rectangles_mpi {
+namespace lupsha_e_rect_integration_mpi {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -23,12 +24,12 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void get_func(const std::function<double(double)>& func);
+  void function_set(const std::function<double(double)>& func);
 
  private:
-  double a = {};
-  double b = {};
-  int n = {};
+  double lower_bound{};
+  double upper_bound{};
+  int num_intervals{};
   std::function<double(double)> f;
   std::vector<double> input_;
   std::vector<double> results_;
@@ -42,19 +43,20 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void get_func(const std::function<double(double)>& func);
+  void function_set(const std::function<double(double)>& func);
 
  private:
-  double integrate(const std::function<double(double)>& f_, double a, double b, int n);
-  double a{};
-  double b{};
-  double local_sum_ = {};
-  double global_sum_ = {};
-  int n = {};
+  double integrate(const std::function<double(double)>& f_, double lower_bound_, double upper_bound_,
+                   int num_intervals_);
+  double lower_bound{};
+  double upper_bound{};
+  double local_sum_{};
+  double global_sum_{};
+  int num_intervals{};
   std::function<double(double)> f;
   std::vector<double> input_;
   std::vector<double> results_;
   boost::mpi::communicator world;
 };
 
-}  // namespace zaznobin_p_interg_method_of_rectangles_mpi
+}  // namespace lupsha_e_rect_integration_mpi
