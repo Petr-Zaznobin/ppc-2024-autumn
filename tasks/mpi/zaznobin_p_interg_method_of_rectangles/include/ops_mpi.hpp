@@ -14,7 +14,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace lupsha_e_rect_integration_mpi {
+namespace zaznobin_p_interg_method_of_rectangles_mpi {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
