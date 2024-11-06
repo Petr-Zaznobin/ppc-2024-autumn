@@ -1,5 +1,3 @@
-
-// Copyright 2024 Lupsha Egor
 #pragma once
 
 #include <gtest/gtest.h>
@@ -58,5 +56,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<double> results_;
   boost::mpi::communicator world;
 };
-
-}  // namespace lupsha_e_rect_integration_mpi
+}
