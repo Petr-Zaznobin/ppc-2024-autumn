@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <gtest/gtest.h>
@@ -57,4 +58,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-} 
+}  // namespace zaznobin_p_interg_method_of_rectangles_mpi
