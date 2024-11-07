@@ -18,27 +18,27 @@ std::tuple<double, double, int> generate_random_data() {
   std::uniform_real_distribution<> bounds_dist(0.0, 10.0);
   std::uniform_int_distribution<> intervals_dist(100000, 2000000);
 
-  double lower_bound = bounds_dist(gen);
-  double upper_bound = lower_bound + bounds_dist(gen);
-  int num_intervals = intervals_dist(gen);
+  double a = bounds_dist(gen);
+  double b = a + bounds_dist(gen);
+  int n = intervals_dist(gen);
 
-  return std::make_tuple(lower_bound, upper_bound, num_intervals);
+  return std::make_tuple(a, b, n);
 }
 
 TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Constant) {
   boost::mpi::communicator world;
-  double lower_bound = 0.0;
-  double upper_bound = 1.0;
-  int num_intervals = 1000;
+  double a = 0.0;
+  double b = 1.0;
+  int n = 1000;
   std::vector<double> global_sum(1, 0.0);
   std::vector<double> result_seq(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
@@ -55,11 +55,11 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Constant) {
 
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
     taskDataSeq->outputs_count.emplace_back(1);
@@ -78,18 +78,18 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Constant) {
 
 TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Logarithm) {
   boost::mpi::communicator world;
-  double lower_bound = 0.1;
-  double upper_bound = 1.0;
-  int num_intervals = 10000;
+  double a = 0.1;
+  double b = 1.0;
+  int n = 10000;
   std::vector<double> global_sum(1, 0.0);
   std::vector<double> result_seq(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
@@ -106,11 +106,11 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Logarithm) {
 
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
     taskDataSeq->outputs_count.emplace_back(1);
@@ -129,18 +129,18 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Logarithm) {
 
 TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Gaussian) {
   boost::mpi::communicator world;
-  double lower_bound = -1.0;
-  double upper_bound = 1.0;
-  int num_intervals = 1000;
+  double a = -1.0;
+  double b = 1.0;
+  int n = 1000;
   std::vector<double> global_sum(1, 0.0);
   std::vector<double> result_seq(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
@@ -157,11 +157,11 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Gaussian) {
 
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
     taskDataSeq->outputs_count.emplace_back(1);
@@ -180,18 +180,18 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Gaussian) {
 
 TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Power) {
   boost::mpi::communicator world;
-  double lower_bound = 0.0;
-  double upper_bound = 1.0;
-  int num_intervals = 1000;
+  double a = 0.0;
+  double b = 1.0;
+  int n = 1000;
   std::vector<double> global_sum(1, 0.0);
   std::vector<double> result_seq(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
@@ -208,11 +208,11 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, Test_Power) {
 
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
     taskDataSeq->outputs_count.emplace_back(1);
