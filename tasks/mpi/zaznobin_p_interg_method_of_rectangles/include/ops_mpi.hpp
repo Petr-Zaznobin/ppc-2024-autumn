@@ -22,7 +22,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void function_set(const std::function<double(double)>& func);
+  void get_func(const std::function<double(double)>& func);
 
  private:
   double a{};
@@ -41,7 +41,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void function_set(const std::function<double(double)>& func);
+  void get_func(const std::function<double(double)>& func);
 
  private:
   double integrate(const std::function<double(double)>& f_, double lower_bound_, double upper_bound_,
