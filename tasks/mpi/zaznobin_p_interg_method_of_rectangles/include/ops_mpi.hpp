@@ -44,8 +44,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   void function_set(const std::function<double(double)>& func);
 
  private:
-  double integrate(const std::function<double(double)>& f_, double a_, double b_,
-                   int n_);
+  double integrate(const std::function<double(double)>& f_, double a_, double b_, int n_);
   double a{};
   double b{};
   double local_sum_{};
