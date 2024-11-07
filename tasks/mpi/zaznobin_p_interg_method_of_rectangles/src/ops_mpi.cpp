@@ -11,12 +11,7 @@
 
 using namespace std::chrono_literals;
 
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::function_set(
-    const std::function<double(double)>& func) {
-  f = func;
-}
-
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::function_set(
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::get_func(
     const std::function<double(double)>& func) {
   f = func;
 }
@@ -72,29 +67,10 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::post_pro
 
   return true;
 }
-
-double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(
-    const std::function<double(double)>& f_, double a_, double b_, int n_) {
-  int rank = world.rank();
-  int size = world.size();
-
-  double width = (b_ - a_) / n_;
-  int local_n = n_ / size;
-  int remainder = n_ % size;
-
-  if (rank < remainder) {
-    local_n = local_n + 1;
-  }
-
-  double local_start = a_ + rank * local_n * width;
-
-  double local_sum = 0.0;
-  for (int i = 0; i < local_n; ++i) {
-    double x = local_start + i * width;
-    local_sum += f(x) * width;
-  }
-
-  return local_sum;
+//---------------------------------------------------------------------------------
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(
+    const std::function<double(double)>& func) {
+  f = func;
 }
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::pre_processing() {
@@ -139,6 +115,30 @@ bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::validation
   }
 
   return true;
+}
+
+double zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::integrate(
+    const std::function<double(double)>& f_, double a_, double b_, int n_) {
+  int rank = world.rank();
+  int size = world.size();
+
+  double width = (b_ - a_) / n_;
+  int local_n = n_ / size;
+  int remainder = n_ % size;
+
+  if (rank < remainder) {
+    local_n = local_n + 1;
+  }
+
+  double local_start = a_ + rank * local_n * width;
+
+  double local_sum = 0.0;
+  for (int i = 0; i < local_n; ++i) {
+    double x = local_start + i * width;
+    local_sum += f(x) * width;
+  }
+
+  return local_sum;
 }
 
 bool zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::run() {
