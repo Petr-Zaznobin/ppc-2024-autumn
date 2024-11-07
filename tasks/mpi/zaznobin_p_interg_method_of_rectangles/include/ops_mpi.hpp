@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <gtest/gtest.h>
@@ -26,9 +25,9 @@ class TestMPITaskSequential : public ppc::core::Task {
   void function_set(const std::function<double(double)>& func);
 
  private:
-  double lower_bound{};
-  double upper_bound{};
-  int num_intervals{};
+  double a{};
+  double b{};
+  int n{};
   std::function<double(double)> f;
   std::vector<double> input_;
   std::vector<double> results_;
@@ -47,11 +46,11 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   double integrate(const std::function<double(double)>& f_, double lower_bound_, double upper_bound_,
                    int num_intervals_);
-  double lower_bound{};
-  double upper_bound{};
+  double a{};
+  double b{};
   double local_sum_{};
   double global_sum_{};
-  int num_intervals{};
+  int n{};
   std::function<double(double)> f;
   std::vector<double> input_;
   std::vector<double> results_;
