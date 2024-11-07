@@ -39,7 +39,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, test_pipeline_run) {
 
   auto testMpiTaskParallel =
       std::make_shared<zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel>(taskDataPar);
-  testMpiTaskParallel->function_set([](double x) { return x * x; });
+  testMpiTaskParallel->get_func([](double x) { return x * x; });
 
   ASSERT_TRUE(testMpiTaskParallel->validation());
   testMpiTaskParallel->pre_processing();
@@ -82,7 +82,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, test_task_run) {
 
   auto testMpiTaskParallel =
       std::make_shared<zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel>(taskDataPar);
-  testMpiTaskParallel->function_set([](double x) { return x * x; });
+  testMpiTaskParallel->get_func([](double x) { return x * x; });
 
   ASSERT_TRUE(testMpiTaskParallel->validation());
   testMpiTaskParallel->pre_processing();
@@ -123,7 +123,7 @@ TEST(zaznobin_p_interg_method_of_rectangles_mpi, test_pipeline_run_random) {
 
   auto testMpiTaskParallel =
       std::make_shared<zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel>(taskDataPar);
-  testMpiTaskParallel->function_set([](double x) { return x * x; });
+  testMpiTaskParallel->get_func([](double x) { return x * x; });
 
   ASSERT_TRUE(testMpiTaskParallel->validation());
   testMpiTaskParallel->pre_processing();
