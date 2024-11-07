@@ -1,4 +1,3 @@
-
 #include "mpi/zaznobin_p_interg_method_of_rectangles/include/ops_mpi.hpp"
 
 #include <mpi.h>
@@ -12,12 +11,12 @@
 
 using namespace std::chrono_literals;
 
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::function_set(
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskSequential::get_func(
     const std::function<double(double)>& func) {
   f = func;
 }
 
-void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::function_set(
+void zaznobin_p_interg_method_of_rectangles_mpi::TestMPITaskParallel::get_func(
     const std::function<double(double)>& func) {
   f = func;
 }
